@@ -80,6 +80,7 @@ function make_zip {
 		cp $KERNEL_DIR/arch/arm64/boot/Image.gz $REPACK_DIR/kernel/
 		zip -r9 `echo $ZIP_NAME`.zip *
 		cp *.zip $ZIP_MOVE
+		
 		cd $KERNEL_DIR
 }
 
@@ -106,48 +107,16 @@ export SUBARCH=arm64
 export KBUILD_BUILD_USER=NATO66613
 export KBUILD_BUILD_HOST=PENTAGON
 
-echo
 
-while read -p "Do you want to clean stuffs (y/n)? " cchoice
-do
-case "$cchoice" in
-	y|Y )
+
+
 		clean_all
 		echo
 		echo "All Cleaned now."
-		break
-		;;
-	n|N )
-		break
-		;;
-	* )
-		echo
-		echo "Invalid try again!"
-		echo
-		;;
-esac
-done
-
-echo
-
-while read -p "Do you want to build?" dchoice
-do
-case "$dchoice" in
-	y|Y )
+		
 		make_kernel
 		make_zip
-		break
-		;;
-	n|N )
-		break
-		;;
-	* )
-		echo
-		echo "Invalid try again!"
-		echo
-		;;
-esac
-done
+		
 echo -e "Copying kernel image..."
     cp -v "${IMAGE}" "${ANYKERNEL}/"
     #cp -v "${IMAGE2}" "${ANYKERNEL}/"
