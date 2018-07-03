@@ -1,4 +1,5 @@
 #!/bin/bash
+source ~/scripts/env
 rm .version
 # Bash Color
 green='\033[01;32m'
@@ -13,7 +14,7 @@ THREAD="-j$(grep -c ^processor /proc/cpuinfo)"
 KERNEL="Image"
 DTBIMAGE="dtb"
 
-DEFCONFIG="revolt_defconfig"
+DEFCONFIG="strakz_defconfig"
 
 
 ## Always ARM64
@@ -24,7 +25,7 @@ THREADS=$(nproc --all)
 ## clang specific values
 CTRIPLE=aarch64-linux-gnu-
 # Clang TC
-CC=~/Android/kernel/tc/clang/aosp/clang-r328903/bin/clang
+CC=~/clang/clang-r328903/bin/clang
 #Compiler string
 export KBUILD_COMPILER_STRING="$(${CC} --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g')"
 
@@ -147,6 +148,31 @@ case "$dchoice" in
 		;;
 esac
 done
+echo -e "Copying kernel image..."
+    cp -v "${IMAGE}" "${ANYKERNEL}/"
+    #cp -v "${IMAGE2}" "${ANYKERNEL}/"
+    #cp -v "${IMAGE3}" "${ANYKERNEL}/"
+cd -
+
+# Zip the wae
+cd ${AROMA}
+    zip -r9 ${FINAL_ZIP} * $BLUE
+cd -
+
+# Finalize the zip down
+if [ -f "$FINAL_ZIP" ]; then
+if [[ ${WORKER} == semaphore ]]; then
+    echo -e "$ZIPNAME zip can be found at $FINAL_ZIP";
+    echo -e "Uploading ${ZIPNAME} to https://transfer.sh/";
+    transfer "${FINAL_ZIP}";
+fi
+    echo -e "$ZIPNAME zip can be found at $FINAL_ZIP"
+    fin
+# Oh no
+else
+    echo -e "Zip Creation Failed =("
+    finerr
+fi
 
 
 echo -e "${green}"
